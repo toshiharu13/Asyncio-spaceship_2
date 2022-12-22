@@ -5,9 +5,19 @@ import random
 import time
 
 from space_ship_fly import animate_spaceship
+from space_garbage import fly_garbage
 
 TIC_TIMEOUT = 0.1
 ROCKET_FRAMES = 'frames/rocket'
+
+GARBAGE_FRAMES = {
+    'duck': 'frames/duck/duck_frame.txt',
+    'hubble': 'frames/hubble/hubble_frame.txt',
+    'lamp': 'frames/lamp/lamp_frame.txt',
+    'trash_large': 'frames/trash_large/trash_large_frame.txt',
+    'trash_small': 'frames/trash_small/trash_small_frame.txt ',
+    'trash_xl': 'frames/trash_xl/trash_xl_frame.txt',
+}
 
 
 def get_frame_from_file(file_name, frame_folder):
@@ -40,6 +50,11 @@ def draw(canvas):
 
     coroutines.append(
         animate_spaceship(canvas, frames, height / 2, width / 2, height, width))
+
+    random_garbage = random.choice(list(GARBAGE_FRAMES.values()))
+    with open(random_garbage, 'r') as garbage_file:
+        frame = garbage_file.read()
+    coroutines.append(fly_garbage(canvas, 10, frame))
 
     while True:
         for coroutine in coroutines.copy():
