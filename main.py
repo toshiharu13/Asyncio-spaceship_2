@@ -4,10 +4,10 @@ import os
 import random
 import time
 
-from space_ship_fly import Animate_spaceship
+from space_ship_fly import animate_spaceship
 
 TIC_TIMEOUT = 0.1
-FRAMES_FOLDER = 'frames'
+ROCKET_FRAMES = 'frames/rocket'
 
 
 def get_frame_from_file(file_name, frame_folder):
@@ -30,8 +30,8 @@ def draw(canvas):
     canvas.nodelay(True)
     height, width = canvas.getmaxyx()
 
-    frame_filenames = os.listdir(FRAMES_FOLDER)
-    frames = (get_frame_from_file(frame_filename, FRAMES_FOLDER) for frame_filename in frame_filenames)
+    frame_filenames = os.listdir(ROCKET_FRAMES)
+    frames = (get_frame_from_file(frame_filename, ROCKET_FRAMES) for frame_filename in frame_filenames)
 
     coroutines = [
         blink(canvas, raw, column, symbol, random.randint(0, 3)) for column, raw, symbol in generate_stars(width, height)
@@ -39,7 +39,7 @@ def draw(canvas):
     # TODO add shutting func
 
     coroutines.append(
-        Animate_spaceship(canvas, frames, height / 2, width / 2, height, width))
+        animate_spaceship(canvas, frames, height / 2, width / 2, height, width))
 
     while True:
         for coroutine in coroutines.copy():

@@ -4,7 +4,7 @@ import itertools
 from curses_tools import draw_frame, get_frame_size, read_controls
 
 
-async def Animate_spaceship(
+async def animate_spaceship(
         canvas, frames, location_y=4, location_x=4, y_max=10, x_max=10):
     border_size = 1
     for frame in itertools.cycle(frames):
