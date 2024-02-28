@@ -24,9 +24,9 @@ async def fill_orbit_with_garbage(canvas, garbage_frames, speed=0.5):
     border_size = 2
 
     while True:
-        awaiting_time = random.randint(0, 100)
+        awaiting_time = random.randint(0, 25)
         for _ in range(awaiting_time):
-            await asyncio.sleep(0)
+            await asyncio.sleep(1)
         random_garbage_file_name = random.choice(garbage_frames)
         with open(random_garbage_file_name, 'r') as garbage_file:
             random_garbage_frame = garbage_file.read()
@@ -42,6 +42,7 @@ async def fill_orbit_with_garbage(canvas, garbage_frames, speed=0.5):
 
         while row < rows_number:
             draw_frame(canvas, row, column, random_garbage_frame)
-            await asyncio.sleep(0)
+            canvas.refresh()
+            await asyncio.sleep(0.2)
             draw_frame(canvas, row, column, random_garbage_frame, negative=True)
             row += speed

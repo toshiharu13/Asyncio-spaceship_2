@@ -39,31 +39,24 @@ def draw(canvas):
     curses.curs_set(False)
     canvas.nodelay(True)
     height, width = canvas.getmaxyx()
+    loop = asyncio.get_event_loop()
 
     frame_filenames = os.listdir(ROCKET_FRAMES)
     frames = (get_frame_from_file(frame_filename, ROCKET_FRAMES) for frame_filename in frame_filenames)
 
-    coroutines = [
-        blink(canvas, raw, column, symbol, random.randint(0, 3)) for column, raw, symbol in generate_stars(width, height)
-    ]
+    for column, raw, symbol in generate_stars(width, height):
+        loop.create_task(blink(canvas, raw, column, symbol, random.randint(0, 3)))
+
     # TODO add shutting func
 
-    coroutines.append(
-        animate_spaceship(canvas, frames, height / 2, width / 2, height, width))
+    loop.create_task(animate_spaceship(canvas, frames, height / 2, width / 2, height, width))
 
-    all_garbages = list(GARBAGE_FRAMES.values())
+    all_garbage = list(GARBAGE_FRAMES.values())
     for _ in range(10):
-        coroutines.append(fill_orbit_with_garbage(canvas, all_garbages))
+        loop.create_task(fill_orbit_with_garbage(canvas, all_garbage))
 
-    while True:
-        for coroutine in coroutines.copy():
-            try:
-                coroutine.send(None)
-            except StopIteration:
-                coroutines.remove(coroutine)
-        canvas.refresh()
-
-        time.sleep(TIC_TIMEOUT)
+    canvas.refresh()
+    loop.run_forever()
 
 
 def add_offset(count):
@@ -76,24 +69,21 @@ async def blink(canvas, row, column, symbol='*', offset=0):
     while True:
         if offset == 0:
             canvas.addstr(row, column, symbol, curses.A_DIM)
-            for tic in range(20):
-                await asyncio.sleep(0)
+            await asyncio.sleep(2)
             offset = add_offset(offset)
         if offset == 1:
             canvas.addstr(row, column, symbol)
-            for tic in range(3):
-                await asyncio.sleep(0)
+            await asyncio.sleep(0.3)
             offset = add_offset(offset)
         if offset == 2:
             canvas.addstr(row, column, symbol, curses.A_BOLD)
-            for tic in range(5):
-                await asyncio.sleep(0)
+            await asyncio.sleep(0.5)
             offset = add_offset(offset)
         if offset == 3:
             canvas.addstr(row, column, symbol)
-            for tic in range(3):
-                await asyncio.sleep(0)
+            await asyncio.sleep(0.3)
             offset = add_offset(offset)
+        canvas.refresh()
 
 
 if __name__ == '__main__':

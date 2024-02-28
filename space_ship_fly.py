@@ -22,7 +22,8 @@ async def animate_spaceship(
         location_x = max(location_x, border_size)
 
         draw_frame(canvas, location_y, location_x, frame)
+        canvas.refresh()
 
-        await asyncio.sleep(0)
+        await asyncio.sleep(0.1)
 
         draw_frame(canvas, location_y, location_x, frame, negative=True)
