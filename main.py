@@ -5,7 +5,7 @@ import random
 import time
 
 from space_ship_fly import animate_spaceship
-from space_garbage import fly_garbage
+from space_garbage import fly_garbage, fill_orbit_with_garbage
 
 TIC_TIMEOUT = 0.1
 ROCKET_FRAMES = 'frames/rocket'
@@ -51,10 +51,9 @@ def draw(canvas):
     coroutines.append(
         animate_spaceship(canvas, frames, height / 2, width / 2, height, width))
 
-    random_garbage = random.choice(list(GARBAGE_FRAMES.values()))
-    with open(random_garbage, 'r') as garbage_file:
-        frame = garbage_file.read()
-    coroutines.append(fly_garbage(canvas, 10, frame))
+    all_garbages = list(GARBAGE_FRAMES.values())
+    for _ in range(10):
+        coroutines.append(fill_orbit_with_garbage(canvas, all_garbages))
 
     while True:
         for coroutine in coroutines.copy():
