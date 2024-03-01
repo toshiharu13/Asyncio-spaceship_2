@@ -1,8 +1,10 @@
 import asyncio
 import itertools
-from physics import update_speed
 
+from physics import update_speed
 from curses_tools import draw_frame, get_frame_size, read_controls
+from spaceship_shooting import fire
+# NOT IN USE
 
 
 async def animate_spaceship(
@@ -13,9 +15,8 @@ async def animate_spaceship(
         ship_size_y, ship_size_x = get_frame_size(frame)
         ship_field_y_max = y_max - ship_size_y - border_size
         ship_field_x_max = x_max - ship_size_x - border_size
-        #await asyncio.sleep(0.2)
 
-        displacement_y, displacement_x, _ = read_controls(canvas)
+        displacement_y, displacement_x, space_pressed = read_controls(canvas)
         y_speed, x_speed = update_speed(y_speed, x_speed, displacement_y, displacement_x)
 
         location_y += y_speed
@@ -24,6 +25,10 @@ async def animate_spaceship(
         location_x += x_speed
         location_x = min(location_x, ship_field_x_max)
         location_x = max(location_x, border_size)
+
+        if space_pressed:
+            gun_column = location_x + (ship_size_x / 2)
+            LOOP.create_task(fire(canvas, location_y, gun_column))
 
         draw_frame(canvas, location_y, location_x, frame)
         canvas.refresh()

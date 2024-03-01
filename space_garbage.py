@@ -4,6 +4,7 @@ import random
 
 async def fly_garbage(canvas, column, garbage_frame, speed=0.5,  y_max=10, x_max=10):
     """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start."""
+    # NOT IN USE
     rows_number, columns_number = canvas.getmaxyx()
     border_size = 1
     garbage_size_y, garbage_size_x = get_frame_size(garbage_frame)
